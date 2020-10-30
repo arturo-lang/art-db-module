@@ -1,0 +1,45 @@
+;==========================================
+; DB :module
+; for Arturo
+;
+; @file: db/main.art
+; @author: drkameleon
+;==========================================
+
+;-------------------------------
+; Main methods
+;-------------------------------
+
+db: function [name,block][
+	dbobj: dbOpen name
+
+	create: function [table,contents][
+		fields: []
+
+		loop #contents [k,v][
+			if is? :string v ->
+				'fields ++ ~"|k| |v|"
+		]
+		fields: join.with:", " fields
+		
+		query: ~"DROP TABLE IF EXISTS |table|"
+		dbExec dbobj query
+
+		query: ~"CREATE TABLE |table| (|fields|)"
+		dbExec dbobj query
+	]
+
+	insert: function [table,contents][
+		details: #contents
+		tableKeys:		join.with:", " select keys details 'x -> is? :string details \ x
+		tableValues:	join.with:", " map (select values details 'x -> is? :string x) 'x -> ~"\"|x|\""
+
+		query: ~"INSERT INTO |table| (|tableKeys|) VALUES (|tableValues|)"
+
+		dbExec dbobj "BEGIN"
+		dbExec dbobj query
+		dbExec dbobj "COMMIT"
+	]
+
+	do block
+]

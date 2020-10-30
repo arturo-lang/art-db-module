@@ -1,0 +1,10 @@
+db "something.db" [
+	create 'users [
+		id: 	"INTEGER PRIMARY KEY" 
+		name:	"VARCHAR(50)"
+	]
+
+	loop 1..10 'i [
+		insert 'users [name: ~"drkameleon: |i|"]
+	]
+]
