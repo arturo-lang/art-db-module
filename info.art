@@ -1,4 +1,4 @@
 description: "Db management module for Arturo"
-version: "0.1"
+version: "0.1.2"
 dependencies: []
 author: "Yanis Zafirópulos"

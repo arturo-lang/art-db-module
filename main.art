@@ -11,7 +11,7 @@
 ;-------------------------------
 
 db: function [name,block][
-	dbobj: dbOpen name
+	dbobj: open name
 
 	create: function [table,contents][
 		fields: []
@@ -22,11 +22,11 @@ db: function [name,block][
 		]
 		fields: join.with:", " fields
 		
-		query: ~"DROP TABLE IF EXISTS |table|"
-		dbExec dbobj query
+		q: ~"DROP TABLE IF EXISTS |table|"
+		query dbobj q
 
-		query: ~"CREATE TABLE |table| (|fields|)"
-		dbExec dbobj query
+		q: ~"CREATE TABLE |table| (|fields|)"
+		query dbobj q
 	]
 
 	insert: function [table,contents][
@@ -34,12 +34,14 @@ db: function [name,block][
 		tableKeys:		join.with:", " select keys details 'x -> is? :string details \ x
 		tableValues:	join.with:", " map (select values details 'x -> is? :string x) 'x -> ~"\"|x|\""
 
-		query: ~"INSERT INTO |table| (|tableKeys|) VALUES (|tableValues|)"
+		q: ~"INSERT INTO |table| (|tableKeys|) VALUES (|tableValues|)"
 
-		dbExec dbobj "BEGIN"
-		dbExec dbobj query
-		dbExec dbobj "COMMIT"
+		query dbobj "BEGIN"
+		query dbobj q
+		query dbobj "COMMIT"
 	]
 
 	do block
+
+	close dbobj
 ]
