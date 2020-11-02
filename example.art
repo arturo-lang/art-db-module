@@ -1,3 +1,5 @@
+do.import module 'db
+
 db "something.db" [
 	create 'users [
 		id: 	"INTEGER PRIMARY KEY" 
